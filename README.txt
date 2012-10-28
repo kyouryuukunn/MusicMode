@@ -12,6 +12,7 @@
 タイトル数に合わせて、自動でぺージを調整する
 再生位置表示、調整スライダー
 一時的な音量変更
+ある程度レイアウトも変更出来る
 使い方
 設定後、first.ksでmusic_mode_init.ksを読み込む
 例
@@ -30,7 +31,7 @@ kag.onCloseQuery = function ()
 	global.Window.onCloseQuery(askYesNo("終了しますか？"));
 } incontextof kag;
 
-293行目の右クリックの設定を環境にあわせてかえる
+290行目の右クリックの設定を環境にあわせてかえる
 music_mode_init.ksの18行目からの各変数を書きかえる
 
 music.base = 'black'; //背景画像
@@ -39,12 +40,16 @@ music.line   = 7;  //ミュージックタイトルを表示する横の数
 music.column = 3;  //ミュージックタイトルを表示する縦の数
 music.base_x = 50; //ミュージックタイトルを表示する初期x座標
 music.base_y = 35; //ミュージックタイトルを表示する初期y座標
+music.page_basex = 600; //ページボタンの初期x座標
+music.page_basey = 0;   //ページボタンの初期y座標
+music.page_width = 20;  //ページボタン間の幅
+music.page_height = 0;  //ページボタン間の高さ
 music.width  = (kag.scWidth - music.base_x*2)\music.column; //ミュージックタイトル間の幅
 music.height = 50; //ミュージックタイトル間の高さ
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
 2つの配列は同じ順番でなくてはならない
-また、95行目の0を1にすることで全ての曲を聞いたことにできる
+また、99行目の0を1にすることで全ての曲を聞いたことにできる
 
 次にflagmusicを曲を演奏するマクロに組み込む
 例

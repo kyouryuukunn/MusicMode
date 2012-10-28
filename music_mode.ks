@@ -185,27 +185,24 @@ music.checkedpage = music.page;
 
 ;ぺージ番号描画
 @if exp="music.maxpage > 0"
-	@locate x=500 y=0
+	@eval exp="music.pagecount = 0"
+	@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
 	@nowait
 	ページ
 	@endnowait
-	@eval exp="music.pagecount = 0"
 *pagedraw
+		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
+		@nowait
 		@if exp="music.pagecount != music.page"
 			@link storage=music_mode.ks target=*sub_draw exp="&'music.page = ' + music.pagecount"
-			@locate x="&600 + 20 * music.pagecount" y=0
-			@nowait
 			@emb exp="music.pagecount + 1"
-			@endnowait
 			@endlink
 		@else
-			@locate x="&600 + 20 * music.pagecount" y=0
-			@nowait
 			@font color=0x666666
 			@emb exp="music.pagecount + 1"
 			@resetfont
-			@endnowait
 		@endif
+		@endnowait
 	@jump storage=music_mode.ks target=*pagedraw cond="++music.pagecount < (music.maxpage + 1)"
 	;@image storage=checked layer=1 left="&600 + 20 * music.page" top=0 visible=true opacity=255
 @endif
