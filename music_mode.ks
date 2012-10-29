@@ -188,16 +188,21 @@ music.checkedpage = music.page;
 	@eval exp="music.pagecount = 0"
 	@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
 	@nowait
-	ÉyÅ[ÉW
+	@eval exp="kag.tagHandlers.font(music.page_font)"
+	page
+	@resetfont
 	@endnowait
 *pagedraw
 		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
 		@nowait
 		@if exp="music.pagecount != music.page"
 			@link storage=music_mode.ks target=*sub_draw exp="&'music.page = ' + music.pagecount"
+			@eval exp="kag.tagHandlers.font(music.page_font)"
 			@emb exp="music.pagecount + 1"
+			@resetfont
 			@endlink
 		@else
+			@eval exp="kag.tagHandlers.font(music.page_font)"
 			@font color=0x666666
 			@emb exp="music.pagecount + 1"
 			@resetfont
