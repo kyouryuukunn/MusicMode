@@ -292,5 +292,6 @@ if (music.playing == -1){
 @eval exp="tf.timer.enabled=false"
 @tempload
 @eval exp="kag.bgm.buf1.volume2 = tempvolume"
+;äeé©Ç≈ê›íË
 @rclick enabled=true jump=true storage=title.ks target=*title
 @return

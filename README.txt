@@ -24,7 +24,7 @@
 [link exp="kag.callExtraConductor('music_mode.ks', '*music_mode')"]ミュージックモード[endlink]
 
 設定方法
-まずAfterinit.tjs(なければつくる)につぎのくわえる
+まずAfterinit.tjs(なければつくる)につぎの文をくわえる
 kag.onCloseQuery = function ()
 {
 	saveSystemVariables();
@@ -33,17 +33,17 @@ kag.onCloseQuery = function ()
 	global.Window.onCloseQuery(askYesNo("終了しますか？"));
 } incontextof kag;
 
-295行目の右クリックの設定を環境にあわせてかえる
+music_mode.ksの295行目の右クリックの設定を環境にあわせてかえる
 music_mode_init.ksの18行目からの各変数を書きかえる
 
 music.base = 'black'; //背景画像
-music.playmark = 'checked'; //再生中のマーク
-music.line   = 7; //横の数
-music.column = 3; //縦の数
-music.base_x = 50; //初期x座標
-music.base_y = 35; //初期y座標
-music.width  = (kag.scWidth - music.base_x*2)\music.column; //タイトル間の幅
-music.height = 50; //タイトル間の高さ
+music.playmark = 'checked'; //再生中のマークを表示する画像
+music.line   = 7;  //再生タイトルを表示する列数
+music.column = 3;  //再生タイトルを表示する行数
+music.base_x = 50; //再生タイトルの初期x座標
+music.base_y = 35; //再生タイトルの初期y座標
+music.width  = (kag.scWidth - music.base_x*2)\music.column; //列の幅
+music.height = 50; //行の幅
 music.page_basex = 500; //ページボタンの初期x座標
 music.page_basey = 0;   //ページボタンの初期y座標
 music.page_width = 20;  //ページボタン間の幅
