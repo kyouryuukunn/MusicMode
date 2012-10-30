@@ -5,6 +5,7 @@
 ;”wŒi‚Ìİ’è
 @image layer=base storage=&music.base page=fore
 @freeimage layer=0
+@layopt layer=0 opacity=255
 @stopbgm
 @iscript
 music.playing = 0;

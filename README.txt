@@ -9,6 +9,9 @@
 当然なにかあっても責任は取れないけど
 使用にはBiscratのSKN_Slider.ksが必要
 
+全部入りサンプルをskydriveで公開している
+https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
+
 機能
 一度聞いた曲だけ表示する
 タイトル数に合わせて、自動でぺージを調整する
