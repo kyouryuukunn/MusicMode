@@ -2,123 +2,130 @@
 
 
 @tempsave
-;背景の設定
-@image layer=base storage=&music.base page=fore
-@freeimage layer=0
-@layopt layer=0 opacity=255
 @stopbgm
+
+@laycount layers="&kag.numCharacterLayers + 2" messages="&kag.numMessageLayers + 2"
+;すべてのレイヤより上に表示
+@layopt index="&2000000+100" layer="&kag.numCharacterLayers-2"
+@layopt index="&2000000+101" layer="&kag.numCharacterLayers-1"
+@layopt index="&2000000+102" layer="&'message' + (kag.numMessageLayers-2)"
+@layopt index="&2000000+103" layer="&'message' + (kag.numMessageLayers-1)"
 @iscript
+kag.fore.messages[kag.numMessageLayers - 1].onMouseWheel = function(shift, delta, x, y){
+	if (delta < 0){
+		if  (music.page >= music.maxpage){
+			music.page = 0;
+		}else{
+			music.page += 1;
+		}
+		kag.process('music_mode.ks', '*sub_draw');
+	}else if(delta > 0){
+		if  (music.page <= 0){
+			music.page = music.maxpage;
+		}else{
+			music.page -= 1;
+		}
+		kag.process('music_mode.ks', '*sub_draw');
+	}
+};
 music.playing = 0;
-var elm = %["visible" => false];
-// 全ての前景レイヤを非表示にします
-for(var i=0;i<kag.numCharacterLayers;i++)
-	kag.fore.layers[i].setOptions(elm);
 // 全てのメッセージレイヤを非表示にします
 for(var i=0;i<kag.numMessageLayers;i++)
-	kag.fore.messages[i].setOptions(elm);
+	kag.fore.messages[i].setOptions(%['visible' => false]);
 //元の音量をバックアップ
 var tempvolume = kag.bgm.buf1.volume2;
-// スライダーの設定
-function myValueChangeHook(num, page) {
-	if (!kag.inSleep) { return; } // sタグで止まっていなかったら何もしない。
-	
-	tf.name = "f.slider[" + num + "]";
-	skn_slider.getSliderValue(%["slider"=>num, "name"=>tf.name]); // [getSliderValue slider="&num" name="&tf.name"]と同じ
-	// ▲これでf.sliderの値は常に最新の値になる▲
-		
-	if (num == 0 && page == "fore") { // スライダ0の表画面の値が変わった。
-		kag.process("music_mode.ks", "*playvolume");
-	} else if (num == 1 && page == "fore") {// スライダ1の表画面の値が変わった	
-		kag.process("music_mode.ks","*playposition");
+// ◇スライダーの設定
+tf.slider = new Array();
+for (var i=0; i < 2; i++){
+	tf.slider[i] = new SliderLayer(kag, kag.fore.layers[kag.numCharacterLayers - 2]);
+	with(tf.slider[i]){
+		.width = 200;
+		.height = 12;
+		.min = 0;
+		.max = 100;
+		//.baseImage = 'base_white';
+		//.baseImage = 'thumb_gray';
+		.visible = true;
 	}
 }
-skn_slider.valueChangeHook.add(myValueChangeHook); // ▲作った関数(myValueChangeHook)をvalueChangeHookに登録▲  （値が変わった時に登録した関数が呼ばれる。）
-
-// リアルタイムで再生位置を反映する
-function onTimer()
+// ◇スライダー0の設定 - (BGM音量調整)
+with(tf.slider[0]){
+	.left = 190;
+	.top = kag.scHeight - 110;
+	.position = (int)(kag.bgm.buf1.volume2 / 1000);
+	.onChange = function(pos){
+		kag.tagHandlers.bgmopt(%['gvolume' => pos]);
+		sf.bgmvolume = kag.bgm.buf1.volume2;
+	};
+}
+// ◇スライダー1の設定 - (再生位置調整)
+with(tf.slider[1]){
+	.left = 190;
+	.top = kag.scHeight - 60;
+	.position = 0;
+	.onChange = function(pos){
+		if  (music.temp_start){
+			kag.bgm.buf1.position = (kag.bgm.buf1.totalTime / 100) * pos;
+			kag.process('music_mode.ks', '*redraw');
+		}
+	};
+}
+// 再生位置を変更する
+function Music_GetTime()
 {
 	if (kag.bgm.currentBuffer.status == 'play')
 	{
-		skn_slider.setSliderValue(%['slider' => 1, 'value' => kag.bgm.buf1.position*100/kag.bgm.buf1.totalTime]);
-		kag.process('music_mode.ks', '*redraw'); 
+		with(tf.slider[1]){
+			//Slider_positionは変更してもonChangeが実行されない
+			var x = kag.bgm.buf1.position*100/kag.bgm.buf1.totalTime;
+			if(x <= .Slider_min) x = .Slider_min;
+			if(x >= .Slider_max) x = .Slider_max;
+			.Slider_position = x;
+			.update();
+			kag.process('music_mode.ks', '*redraw');
+		}
 	}
 }
-tf.timer = new Timer(onTimer, '');
-tf.timer.interval = 1000; //1秒周期
+tf.timer = new Timer(Music_GetTime, '');
+tf.timer.interval = 1000;
 tf.timer.enabled = true;
 @endscript
 
+;背景の設定
+@image layer="&kag.numCharacterLayers-2" storage=&music.base page=fore visible=true
 
 ;メッセージレイヤの設定
-;各メッセージレイヤにスライダーを置く
-@laycount messages="&kag.numMessageLayers + 3"
 @current layer="&'message' + (kag.numMessageLayers - 1)"
-@position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true layer=message marginb=0 marginl=0 marginr=0 margint=0
+@position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true marginb=0 marginl=0 marginr=0 margint=0
 @current layer="&'message' + (kag.numMessageLayers - 2)"
-@position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true layer=message marginb=0 marginl=0 marginr=0 margint=0
-@current layer="&'message' + (kag.numMessageLayers - 3)"
-@position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true layer=message marginb=0 marginl=0 marginr=0 margint=0
+@position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true marginb=0 marginl=0 marginr=0 margint=0
 ;右クリックの設定
 @rclick enabled=true jump=true storage=music_mode.ks target=*back
+@history enabled=false output=false
 
-; ◇スライダーの数
-@setSliderCount sliders="2"
-; ◇スライダーの値を入れる配列
-@eval exp="f.slider = [ (int)(kag.bgm.buf1.volume2 / 1000), 0]"
-; ◇スライダー0の設定 - (BGM音量調整)
+@nowait
 @current layer="&'message' + (kag.numMessageLayers - 2)"
-@setSliderImages slider="0" forebase="base_white" forethumb="thumb_gray"
-@setSliderOptions slider="0" page="fore" visible="true" left="190" top="&kag.scHeight-110" changing="203" max="100" min="0" visible="true" scale="2" hit="true" cursor="true"
-; ◇スライダー1の設定 - (再生位置調整)
-@current layer="&'message' + (kag.numMessageLayers - 3)"
-@setSliderImages slider="1" forebase="base_white" forethumb="thumb_gray"
-@setSliderOptions slider="1" page="fore" visible="true" left="190" top="&kag.scHeight-60" changing="203" max="100" min="0" visible="true" scale="2" hit="true" cursor="true"
-; ◇スライダの値を初期設定
-@setSliderValue slider="0" value="&f.slider[0]"
-@setSliderValue slider="1" value="&f.slider[1]"
-
+@locate x=450 y=&kag.scHeight-80
+00:00/00:00
+@current layer="&'message' + (kag.numMessageLayers - 1)"
+@endnowait
 
 @call storage=music_mode.ks target=*draw
 @s
 
-; ◇BGM音量調整のスライダが動いたときの処理
-*playvolume
-@setSliderEnabled enabled="false"
-@bgmopt gvolume="&f.slider[0]"
-; スライダの値表示更新
-@current layer="&'message' + (kag.numMessageLayers - 2)"
-@er
-@current layer="&'message' + (kag.numMessageLayers - 1)"
-@setSliderEnabled enabled="true"
-@s
-
-; 再生位置のスライダが動いたときの処理
-*playposition
-@if  exp="kag.bgm.currentBuffer.status != 'unload'"
-	@setSliderEnabled enabled="false"
-	@eval exp="kag.bgm.buf1.position = kag.bgm.buf1.totalTime*f.slider[1]/100"
-	; スライダの値表示更新
-	@current layer="&'message' + (kag.numMessageLayers - 3)"
-	@er
-	@current layer="&'message' + (kag.numMessageLayers - 1)"
-	@setSliderEnabled enabled="true"
-	@jump storage=music_mode.ks target=*redraw
-@endif
-@s
-
 ; 再生位置を描画する
 *redraw
-@current layer="&'message' + (kag.numMessageLayers - 3)"
+@current layer="&'message' + (kag.numMessageLayers - 2)"
 @er
 @locate x=450 y="&kag.scHeight-80"
 @nowait
-@if  exp="kag.bgm.currentBuffer.status != 'stop'"
-	@emb exp="'%02d:%02d/%02d:%02d'.sprintf(kag.bgm.buf1.position\60000, (int)((kag.bgm.buf1.position%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
-@else
-	@emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*f.slider[1]/100)\60000, (int)(((kag.bgm.buf1.totalTime*f.slider[1]/100)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
-@endif
-@current layer="&'message' + (kag.numMessageLayers - 1)"
+;@if  exp="kag.bgm.currentBuffer.status != 'stop'"
+;	@emb exp="'%02d:%02d/%02d:%02d'.sprintf(kag.bgm.buf1.position\60000, (int)((kag.bgm.buf1.position%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
+;@else
+	@emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*tf.slider[1].position/100)\60000, (int)(((kag.bgm.buf1.totalTime*tf.slider[1].position/100)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
+;@endif
 @endnowait
+@current layer="&'message' + (kag.numMessageLayers - 1)"
 @s
 
 *play
@@ -133,12 +140,13 @@ music.check_y = (1 + music.playing - music.page*music.column*music.line)%music.l
 music.check_x = music.base_x + music.check_x * music.width;
 music.check_y = music.base_y + music.check_y * music.height;
 music.checkedpage = music.page;
+music.temp_start = 1;
 @endscript
-@image layer=0 visible=true storage=&music.playmark left=&music.check_x-30 top=&music.check_y+15
+@image layer="&kag.numCharacterLayers-1" visible=true storage=&music.playmark left=&music.check_x-30 top=&music.check_y+15
 ;スライダーを初期化する
-@setSliderValue slider="1" value="0"
 @playbgm storage=&music.music_storage[music.playing] loop=false
-@setSliderEnabled enabled="true"
+;ハードウェア例外が出る
+;@eval exp="tf.slider[1].position=0"
 @call storage=music_mode.ks target=*draw
 @jump storage=music_mode.ks target=*redraw
 @s
@@ -147,15 +155,19 @@ music.checkedpage = music.page;
 *stop
 @unlocklink
 @stopbgm cond="kag.bgm.currentBuffer.status == 'play'"
+;マウスホイールを使うために、フォーカス設定
+@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
 @s
 ;再生
 *start
 @unlocklink
 @if exp="kag.bgm.currentBuffer.status == 'stop'"
-	@eval exp="music.temp_position = kag.bgm.buf1.totalTime/100*f.slider[1]"
+	@eval exp="music.temp_position = kag.bgm.buf1.totalTime/100*tf.slider[1].position"
 	@playbgm storage=&music.music_storage[music.playing] loop=false
 	@eval exp="kag.bgm.buf1.position = music.temp_position"
 @endif
+;マウスホイールを使うために、フォーカス設定
+@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
 @s
 
 *sub_draw
@@ -166,7 +178,7 @@ music.checkedpage = music.page;
 *draw
 @current layer="&'message' + (kag.numMessageLayers - 1)"
 @er
-@layopt layer=0 visible="&music.checkedpage == music.page"
+@layopt layer="&kag.numCharacterLayers-1" visible="&music.checkedpage == music.page"
 @eval exp="music.temp_column = 0"
 *column
 	@eval exp="music.temp_line = 0"
@@ -187,12 +199,12 @@ music.checkedpage = music.page;
 ;ぺージ番号描画
 @if exp="music.maxpage > 0"
 	@eval exp="music.pagecount = 0"
-	@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
-	@nowait
-	@eval exp="kag.tagHandlers.font(music.page_font)"
-	page
-	@resetfont
-	@endnowait
+	;@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
+	;@nowait
+	;@eval exp="kag.tagHandlers.font(music.page_font)"
+	;page
+	;@resetfont
+	;@endnowait
 *pagedraw
 		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
 		@nowait
@@ -244,11 +256,11 @@ music.checkedpage = music.page;
 音量
 @locate x=30 y=&kag.scHeight-80
 再生位置
-@current layer="&'message' + (kag.numMessageLayers - 3)"
-@locate x=450 y=&kag.scHeight-80
-00:00/00:00
-@current layer="&'message' + (kag.numMessageLayers - 1)"
 @endnowait
+
+;マウスホイールを使うために、フォーカス設定
+@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
+
 @return
 
 *nextpage
@@ -291,8 +303,10 @@ if (music.playing == -1){
 *back
 ; タイマー停止
 @eval exp="tf.timer.enabled=false"
+@eval exp="music.temp_start=0"
 @tempload
+@history enabled=true output=true
 @eval exp="kag.bgm.buf1.volume2 = tempvolume"
 ;各自で設定
-@rclick enabled=true jump=true storage=title.ks target=*title
+;@rclick enabled=false
 @return

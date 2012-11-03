@@ -7,7 +7,7 @@
 使用を明記する必要も報告する必要もない
 けど報告をくれるとうれしい
 当然なにかあっても責任は取れないけど
-使用にはBiscratのSKN_Slider.ksが必要
+
 
 全部入りサンプルをskydriveで公開している
 https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
@@ -18,6 +18,12 @@ https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
 再生位置表示、調整スライダー
 一時的な音量変更
 ある程度レイアウトも変更出来る
+
+使っている変数
+sf.music_flag
+sf.music_mode_init
+global.music
+
 使い方
 設定後、first.ksでmusic_mode_init.ksを読み込む
 例

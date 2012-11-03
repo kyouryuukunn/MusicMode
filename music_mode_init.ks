@@ -15,10 +15,10 @@
 ;前処理と設定
 @iscript
 var music = %[];
-music.base = 'black'; //背景画像
+music.base = 'black'; //背景、透明部分がある場合は、直前のゲーム画面が見える
 music.playmark = 'checked'; //再生中のマーク
-music.line   = 7; //横の数
-music.column = 3; //縦の数
+music.line   = 1; //横の数
+music.column = 2; //縦の数
 music.base_x = 50; //初期x座標
 music.base_y = 35; //初期y座標
 music.width  = (kag.scWidth - music.base_x*2)\music.column; //タイトル間の幅
@@ -31,62 +31,20 @@ music.page_font = %['italic' => true];  //ページボタンのフォント
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
 music.music_storage = [   //2つの配列は同じ順番でなくてはならない
-'music0',
-'music1',
-'music2',
-'music3',
-'music4',
-'music5',
-'music6',
-'music7',
-'music8',
-'music9',
-'music10',
-'music11',
-'music12',
-'music13',
-'music14',
-'music15',
-'music16',
-'music17',
-'music18',
-'music19',
-'music20',
-'music21',
-'music22',
-'music23',
-'music24',
-'music25',
-'music26'
+'tw039', 
+'tw043', 
+'tw044', 
+'tw045', 
+'tw042', 
+'tw041' 
 ];
 music.music_caption = [
-'music0',
-'music1',
-'music2',
-'music3',
-'music4',
-'music5',
-'music6',
-'music7',
-'music8',
-'music9',
-'music10',
-'music11',
-'music12',
-'music13',
-'music14',
-'music15',
-'music16',
-'music17',
-'music18',
-'music19',
-'music20',
-'music21',
-'music22',
-'music23',
-'music24',
-'music25',
-'music26'
+'tw039', 
+'tw043', 
+'tw044', 
+'tw045', 
+'tw042', 
+'tw041' 
 ];
 if (sf.music_mode_init === void){
 	//最初に一度だけ実行
@@ -104,6 +62,7 @@ function music_mode_complete(){ //全ての曲を聞いたことにする
 }
 music.page = 0;
 music.maxpage = music.music_caption.count%(music.column*music.line) == 0 ? music.music_caption.count\(music.column*music.line) - 1 : music.music_caption.count\(music.column*music.line);
+Scripts.evalStorage("SliderLayer.tjs");
 @endscript
 
 @return
