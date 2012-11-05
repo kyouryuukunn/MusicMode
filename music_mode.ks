@@ -37,38 +37,25 @@ var tempvolume = kag.bgm.buf1.volume2;
 // ◇スライダーの設定
 tf.slider = new Array();
 for (var i=0; i < 2; i++){
-	tf.slider[i] = new SliderLayer(kag, kag.fore.layers[kag.numCharacterLayers - 2]);
+	tf.slider[i] = new KSliderLayer(kag, kag.fore.layers[kag.numCharacterLayers - 2]);
 	with(tf.slider[i]){
-		.width = 200;
-		.height = 12;
-		.min = 0;
-		.max = 100;
-		//.baseImage = 'base_white';
-		//.baseImage = 'thumb_gray';
-		.visible = true;
+		.setOptions(%['graphic' => 'slider_base', 'tabgraphic' => 'slider_tab']);
 	}
 }
 // ◇スライダー0の設定 - (BGM音量調整)
 with(tf.slider[0]){
 	.left = 190;
 	.top = kag.scHeight - 110;
-	.position = (int)(kag.bgm.buf1.volume2 / 1000);
-	.onChange = function(pos){
-		kag.tagHandlers.bgmopt(%['gvolume' => pos]);
-		sf.bgmvolume = kag.bgm.buf1.volume2;
-	};
+	.hval = kag.bgm.buf1.volume2 / 100000;
+	.updateState();
+	.onchangefunc = 'music_bgmslider';
 }
 // ◇スライダー1の設定 - (再生位置調整)
 with(tf.slider[1]){
 	.left = 190;
 	.top = kag.scHeight - 60;
-	.position = 0;
-	.onChange = function(pos){
-		if  (music.temp_start){
-			kag.bgm.buf1.position = (kag.bgm.buf1.totalTime / 100) * pos;
-			kag.process('music_mode.ks', '*redraw');
-		}
-	};
+	.hval = 0;
+	.onchangefunc = 'music_bgmposition';
 }
 // 再生位置を変更する
 function Music_GetTime()
@@ -76,12 +63,10 @@ function Music_GetTime()
 	if (kag.bgm.currentBuffer.status == 'play')
 	{
 		with(tf.slider[1]){
-			//Slider_positionは変更してもonChangeが実行されない
-			var x = kag.bgm.buf1.position*100/kag.bgm.buf1.totalTime;
-			if(x <= .Slider_min) x = .Slider_min;
-			if(x >= .Slider_max) x = .Slider_max;
-			.Slider_position = x;
-			.update();
+			//変更してもonchangefuncを実行しない
+			.hval = kag.bgm.buf1.position/kag.bgm.buf1.totalTime;
+			// 現在の値にあわせてtabの位置を移動する
+			.tab.setPos((.width-.tab.width)*.hval, (.height-.tab.height)*(1-.vval));
 			kag.process('music_mode.ks', '*redraw');
 		}
 	}
@@ -119,11 +104,7 @@ tf.timer.enabled = true;
 @er
 @locate x=450 y="&kag.scHeight-80"
 @nowait
-;@if  exp="kag.bgm.currentBuffer.status != 'stop'"
-;	@emb exp="'%02d:%02d/%02d:%02d'.sprintf(kag.bgm.buf1.position\60000, (int)((kag.bgm.buf1.position%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
-;@else
-	@emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*tf.slider[1].position/100)\60000, (int)(((kag.bgm.buf1.totalTime*tf.slider[1].position/100)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
-;@endif
+@emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*tf.slider[1].hval)\60000, (int)(((kag.bgm.buf1.totalTime*tf.slider[1].hval)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
 @endnowait
 @current layer="&'message' + (kag.numMessageLayers - 1)"
 @s
@@ -162,7 +143,7 @@ music.temp_start = 1;
 *start
 @unlocklink
 @if exp="kag.bgm.currentBuffer.status == 'stop'"
-	@eval exp="music.temp_position = kag.bgm.buf1.totalTime/100*tf.slider[1].position"
+	@eval exp="music.temp_position = kag.bgm.buf1.totalTime*tf.slider[1].hval"
 	@playbgm storage=&music.music_storage[music.playing] loop=false
 	@eval exp="kag.bgm.buf1.position = music.temp_position"
 @endif
@@ -188,7 +169,9 @@ music.temp_start = 1;
 				@link storage=music_mode.ks target=*play exp="&'music.playing = ' + ( music.page*music.column*music.line + music.temp_column*music.line + music.temp_line )"
 				@locate x="&music.base_x + music.temp_column * music.width" y="&music.base_y + music.temp_line * music.height"
 				@nowait
+				@eval exp="kag.tagHandlers.font(music.music_caption_font)"
 				@emb exp="music.music_caption[music.page*music.column*music.line + music.temp_column*music.line + music.temp_line]"
+				@resetfont
 				@endnowait
 				@endlink
 			@endif
@@ -225,7 +208,7 @@ music.temp_start = 1;
 	;@image storage=checked layer=1 left="&600 + 20 * music.page" top=0 visible=true opacity=255
 @endif
 
-
+@eval exp="kag.tagHandlers.font(music.music_font)"
 @nowait
 @link storage=music_mode.ks target=*backpage
 @locate x=30 y=&kag.scHeight-180
@@ -257,6 +240,7 @@ music.temp_start = 1;
 @locate x=30 y=&kag.scHeight-80
 再生位置
 @endnowait
+@resetfont
 
 ;マウスホイールを使うために、フォーカス設定
 @eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
@@ -303,10 +287,11 @@ if (music.playing == -1){
 *back
 ; タイマー停止
 @eval exp="tf.timer.enabled=false"
+;バックアップした音量を戻す
+@eval exp="kag.tagHandlers.bgmopt(%['gvolume' => tempvolume/1000])"
 @eval exp="music.temp_start=0"
 @tempload
 @history enabled=true output=true
-@eval exp="kag.bgm.buf1.volume2 = tempvolume"
 ;各自で設定
 ;@rclick enabled=false
 @return
