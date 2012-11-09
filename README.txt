@@ -2,20 +2,21 @@
 
 よくあるミュージックモードを実装する
 
-もしも使いたい人がいたなら好きに使っていい
+もしも使いたい人がいたなら好きに使っていいです。
 改変、再配布は自由
-使用を明記する必要も報告する必要もない
-けど報告をくれるとうれしい
+使用を明記する必要も報告する必要もないですが、
+報告をくれるとうれしいです。
 当然なにかあっても責任は取れないけど
-スライダーには色々な墓場のKLayers.ksを利用している
+スライダーには色々な墓場のKLayers.ksを利用しています。
 
 
-全部入りサンプルをskydriveで公開している
+全部入りサンプルをskydriveで公開中
 https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
 
 機能
 一度聞いた曲だけ表示する
 タイトル数に合わせて、自動でぺージを調整する
+タイトルに合わせて、背景をトランジション
 再生位置表示、調整スライダー
 一時的な音量変更
 ある程度レイアウトも変更出来る
@@ -43,7 +44,7 @@ kag.onCloseQuery = function ()
 	global.Window.onCloseQuery(askYesNo("終了しますか？"));
 } incontextof kag;
 
-music_mode.ksの295行目の右クリックの設定を環境にあわせてかえる
+music_mode.ksの302行目の右クリックの設定を環境にあわせてかえる
 music_mode_init.ksの18行目からの各変数を書きかえる
 
 music.base = 'black'; //背景画像
@@ -61,7 +62,10 @@ music.page_height = 0;  //ページボタン間の高さ
 music.page_font = %['italic' => true];  //ページボタンのフォント
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
-2つの配列は同じ順番でなくてはならない
+music.music_cg_on = 0; //曲に合わせて背景を変更するか
+music.music_cg = []; //表示するCG
+
+music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
 また、music_mode_complete()を実行することで全ての曲を聞いたことにできる
 
 次にflagmusicを曲を演奏するマクロに組み込む

@@ -4,13 +4,27 @@
 @tempsave
 @stopbgm
 
+;専用のレイヤを作る
 @laycount layers="&kag.numCharacterLayers + 2" messages="&kag.numMessageLayers + 2"
 ;すべてのレイヤより上に表示
+;背景
 @layopt index="&2000000+100" layer="&kag.numCharacterLayers-2"
+;再生マーク
 @layopt index="&2000000+101" layer="&kag.numCharacterLayers-1"
+;再生位置を描画
 @layopt index="&2000000+102" layer="&'message' + (kag.numMessageLayers-2)"
+;タイトル、ページを描画
 @layopt index="&2000000+103" layer="&'message' + (kag.numMessageLayers-1)"
+
+@backlay
+;背景の設定
+@image layer="&kag.numCharacterLayers-2" storage=&music.base page=back visible=true
+@stoptrans
+@trans method=crossfade time=300
+@wt
+
 @iscript
+//マウスホイール用の設定
 kag.fore.messages[kag.numMessageLayers - 1].onMouseWheel = function(shift, delta, x, y){
 	if (delta < 0){
 		if  (music.page >= music.maxpage){
@@ -76,9 +90,6 @@ tf.timer.interval = 1000;
 tf.timer.enabled = true;
 @endscript
 
-;背景の設定
-@image layer="&kag.numCharacterLayers-2" storage=&music.base page=fore visible=true
-
 ;メッセージレイヤの設定
 @current layer="&'message' + (kag.numMessageLayers - 1)"
 @position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true marginb=0 marginl=0 marginr=0 margint=0
@@ -86,19 +97,20 @@ tf.timer.enabled = true;
 @position opacity=0 width=&kag.scWidth height=&kag.scHeight top=0 left=0 visible=true marginb=0 marginl=0 marginr=0 margint=0
 ;右クリックの設定
 @rclick enabled=true jump=true storage=music_mode.ks target=*back
+;履歴の禁止
 @history enabled=false output=false
+
 
 @nowait
 @current layer="&'message' + (kag.numMessageLayers - 2)"
 @locate x=450 y=&kag.scHeight-80
 00:00/00:00
-@current layer="&'message' + (kag.numMessageLayers - 1)"
 @endnowait
-
+;描画
 @call storage=music_mode.ks target=*draw
 @s
 
-; 再生位置を描画する
+; 再生位置を描画するサブルーチン
 *redraw
 @current layer="&'message' + (kag.numMessageLayers - 2)"
 @er
@@ -106,13 +118,13 @@ tf.timer.enabled = true;
 @nowait
 @emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*tf.slider[1].hval)\60000, (int)(((kag.bgm.buf1.totalTime*tf.slider[1].hval)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
 @endnowait
-@current layer="&'message' + (kag.numMessageLayers - 1)"
 @s
 
 *play
 @unlocklink
 ;再生中のチェックをする
 @iscript
+//再生中の曲のページと位置を調べて必要ならページ移動
 // ページチェック
 	music.page = ( (1 + music.playing)%(music.column*music.line) ) == 0 ? ( (1 + music.playing)\(music.column*music.line) - 1) : (1 + music.playing)\(music.column*music.line);
 // 再生中チェック
@@ -123,12 +135,19 @@ music.check_y = music.base_y + music.check_y * music.height;
 music.checkedpage = music.page;
 music.temp_start = 1;
 @endscript
-@image layer="&kag.numCharacterLayers-1" visible=true storage=&music.playmark left=&music.check_x-30 top=&music.check_y+15
 ;スライダーを初期化する
 @playbgm storage=&music.music_storage[music.playing] loop=false
 ;ハードウェア例外が出る
 ;@eval exp="tf.slider[1].position=0"
 @call storage=music_mode.ks target=*draw
+@image layer="&kag.numCharacterLayers-1" visible=true storage=&music.playmark left=&music.check_x-30 top=&music.check_y+15
+@if exp="music.music_cg_on" 
+	@backlay
+	@image layer="&kag.numCharacterLayers-2" visible=true page=back storage=&music.music_cg[music.playing]
+	@stoptrans
+	@trans method=crossfade time=300 layer="&kag.numCharacterLayers-1" children=false
+	@wt
+@endif
 @jump storage=music_mode.ks target=*redraw
 @s
 
@@ -136,34 +155,35 @@ music.temp_start = 1;
 *stop
 @unlocklink
 @stopbgm cond="kag.bgm.currentBuffer.status == 'play'"
-;マウスホイールを使うために、フォーカス設定
-@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
+@call storage=music_mode.ks target=*draw
 @s
 ;再生
 *start
 @unlocklink
-@if exp="kag.bgm.currentBuffer.status == 'stop'"
+@if exp="!music.temp_start"
+	@jump storage=music_mode.ks target=*play
+@elsif exp="kag.bgm.currentBuffer.status == 'stop'"
+	;停止位置から再生
 	@eval exp="music.temp_position = kag.bgm.buf1.totalTime*tf.slider[1].hval"
 	@playbgm storage=&music.music_storage[music.playing] loop=false
 	@eval exp="kag.bgm.buf1.position = music.temp_position"
 @endif
-;マウスホイールを使うために、フォーカス設定
-@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
+@call storage=music_mode.ks target=*draw
 @s
 
 *sub_draw
 @call storage=music_mode.ks target=*draw
 @s
 
-;描画
+;タイトル描画
 *draw
 @current layer="&'message' + (kag.numMessageLayers - 1)"
 @er
 @layopt layer="&kag.numCharacterLayers-1" visible="&music.checkedpage == music.page"
 @eval exp="music.temp_column = 0"
-*column
+*column_loop
 	@eval exp="music.temp_line = 0"
-*line
+*line_loop
 		@if exp="sf.music_flag[music.page*music.column*music.line + music.temp_column*music.line + music.temp_line]"
 			@if exp="music.page*music.column*music.line + music.temp_column*music.line + music.temp_line < music.music_storage.count"
 				@link storage=music_mode.ks target=*play exp="&'music.playing = ' + ( music.page*music.column*music.line + music.temp_column*music.line + music.temp_line )"
@@ -176,10 +196,11 @@ music.temp_start = 1;
 				@endlink
 			@endif
 		@endif
-	@jump storage=music_mode.ks target=*line cond="++music.temp_line < music.line"
-@jump storage=music_mode.ks target=*column cond="++music.temp_column < music.column"
+	@jump storage=music_mode.ks target=*line_loop cond="++music.temp_line < music.line"
+@jump storage=music_mode.ks target=*column_loop cond="++music.temp_column < music.column"
 
 ;ぺージ番号描画
+;ページが複数あったら
 @if exp="music.maxpage > 0"
 	@eval exp="music.pagecount = 0"
 	;@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
@@ -188,7 +209,7 @@ music.temp_start = 1;
 	;page
 	;@resetfont
 	;@endnowait
-*pagedraw
+*page_loop
 		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
 		@nowait
 		@if exp="music.pagecount != music.page"
@@ -198,13 +219,14 @@ music.temp_start = 1;
 			@resetfont
 			@endlink
 		@else
+			;現在ページなる色を変えて無効
 			@eval exp="kag.tagHandlers.font(music.page_font)"
 			@font color=0x666666
 			@emb exp="music.pagecount + 1"
 			@resetfont
 		@endif
 		@endnowait
-	@jump storage=music_mode.ks target=*pagedraw cond="++music.pagecount < (music.maxpage + 1)"
+	@jump storage=music_mode.ks target=*page_loop cond="++music.pagecount < (music.maxpage + 1)"
 	;@image storage=checked layer=1 left="&600 + 20 * music.page" top=0 visible=true opacity=255
 @endif
 
@@ -215,23 +237,23 @@ music.temp_start = 1;
 前の曲
 @endlink
 
-@link storage=music_mode.ks target=*stop
-@locate x=150 y=&kag.scHeight-180
-停止
-@endlink
-
-@link storage=music_mode.ks target=*start
-@locate x=230 y=&kag.scHeight-180
-再生
+@locate x=140 y=&kag.scHeight-180
+@if exp="kag.bgm.currentBuffer.status == 'stop' || !music.temp_start"
+	@link storage=music_mode.ks target=*start
+	再生
+@else
+	@link storage=music_mode.ks target=*stop
+	停止
+@endif
 @endlink
 
 @link storage=music_mode.ks target=*nextpage
-@locate x=330 y=&kag.scHeight-180
+@locate x=230 y=&kag.scHeight-180
 @ch text=次の曲
 @endlink
 
 @link storage=music_mode.ks target=*back
-@locate x=430 y=&kag.scHeight-180
+@locate x=350 y=&kag.scHeight-180
 戻る
 @endlink
 
@@ -244,7 +266,6 @@ music.temp_start = 1;
 
 ;マウスホイールを使うために、フォーカス設定
 @eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
-
 @return
 
 *nextpage
@@ -291,7 +312,7 @@ if (music.playing == -1){
 @eval exp="kag.tagHandlers.bgmopt(%['gvolume' => tempvolume/1000])"
 @eval exp="music.temp_start=0"
 @tempload
-@history enabled=true output=true
+;@history enabled=true output=true
 ;各自で設定
-;@rclick enabled=false
+@rclick enabled=false
 @return

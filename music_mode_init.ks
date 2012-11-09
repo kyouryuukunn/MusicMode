@@ -32,7 +32,8 @@ music.music_caption_font = %['italic' => true];  //タイトルのフォント
 music.music_font = %[]; //操作用リンクのフォント
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
-music.music_storage = [   //2つの配列は同じ順番でなくてはならない
+//music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
+music.music_storage = [   
 'tw039', 
 'tw043', 
 'tw044', 
@@ -48,6 +49,8 @@ music.music_caption = [
 'tw042', 
 'tw041' 
 ];
+music.music_cg_on = 0; //曲に合わせて背景を変更するか
+music.music_cg = []; //表示するCG
 if (sf.music_mode_init === void){
 	//最初に一度だけ実行
 	//聞いたかどうかのフラグ
