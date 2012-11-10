@@ -60,21 +60,21 @@ if (sf.music_mode_init === void){
 	}
 	sf.music_mode_init = 1;
 }
-function music_mode_complete(){ //全ての曲を聞いたことにする
+music.complete = function (){ //全ての曲を聞いたことにする
 	for (var i=0; i < music.music_storage.count; i++){
 		sf.music_flag[i]=true;
 	}
-}
+} incontextof global;
 // スライダーの関数
-function music_bgmslider(hval,vval,drag){
+music.volumeslider = function (hval,vval,drag){
 	kag.tagHandlers.bgmopt(%['gvolume' => hval*100]);
-};
-function music_bgmposition(hval,vval,drag){
+} incontextof global;
+music.positionslider = function (hval,vval,drag){
 	if  (music.temp_start){
 		kag.bgm.buf1.position = kag.bgm.buf1.totalTime * hval;
 		kag.process('music_mode.ks', '*redraw');
 	}
-};
+} incontextof global;
 music.page = 0;
 music.maxpage = music.music_caption.count%(music.column*music.line) == 0 ? music.music_caption.count\(music.column*music.line) - 1 : music.music_caption.count\(music.column*music.line);
 @endscript

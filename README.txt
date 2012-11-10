@@ -40,11 +40,11 @@ kag.onCloseQuery = function ()
 {
 	saveSystemVariables();
 	if(!askOnClose) { global.Window.onCloseQuery(true); return; }
-	tf.timer.enabled=false if tf.timer !== void;
+	delete music.timer if music.timer !== void;
 	global.Window.onCloseQuery(askYesNo("終了しますか？"));
 } incontextof kag;
 
-music_mode.ksの302行目の右クリックの設定を環境にあわせてかえる
+music_mode.ksのラベル*backの右クリックの設定を環境にあわせてかえる
 music_mode_init.ksの18行目からの各変数を書きかえる
 
 music.base = 'black'; //背景画像
@@ -66,7 +66,7 @@ music.music_cg_on = 0; //曲に合わせて背景を変更するか
 music.music_cg = []; //表示するCG
 
 music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
-また、music_mode_complete()を実行することで全ての曲を聞いたことにできる
+また、music.complete()を実行することで全ての曲を聞いたことにできる
 
 次にflagmusicを曲を演奏するマクロに組み込む
 例
