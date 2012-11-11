@@ -19,8 +19,8 @@ music.base = 'black'; //背景、透明部分がある場合は、直前のゲーム画面が見える
 music.playmark = 'playing'; //再生中のマーク
 music.playmark_x = -37; //再生中マークのタイトルからの相対x座標
 music.playmark_y = 8; //再生中マークのタイトルからの相対y座標
-music.line   = 3; //横の数
-music.column = 3; //縦の数
+music.line   = 2; //横の数
+music.column = 2; //縦の数
 music.base_x = 50; //初期x座標
 music.base_y = 35; //初期y座標
 music.width  = (kag.scWidth - music.base_x*2)\music.column; //タイトル間の幅
@@ -51,8 +51,16 @@ music.music_caption = [
 'tw042', 
 'tw041' 
 ];
-music.music_cg_on = 0; //曲に合わせて背景を変更するか
-music.music_cg = []; //表示するCG
+music.music_cg_on = 1; //曲に合わせて背景を変更するか
+
+music.music_cg = [ //表示するCG
+'細かいひし形(左から右へ)',
+'細かいひし形(左上から右下へ)',
+'放射状(時計回り)',
+'左下から右上へ',
+'こすり(左から右へ)',
+'爆発'
+];
 if (sf.music_mode_init === void){
 	//最初に一度だけ実行
 	//聞いたかどうかのフラグ
@@ -75,6 +83,24 @@ music.positionslider = function (hval,vval,drag){
 	if  (music.temp_start){
 		kag.bgm.buf1.position = kag.bgm.buf1.totalTime * hval;
 		kag.process('music_mode.ks', '*redraw');
+	}
+} incontextof global;
+//マウスホイール用の設定
+music.wheel = function(shift, delta, x, y){
+	if (delta < 0){
+		if  (music.page >= music.maxpage){
+			music.page = 0;
+		}else{
+			music.page += 1;
+		}
+		kag.process('music_mode.ks', '*sub_draw');
+	}else if(delta > 0){
+		if  (music.page <= 0){
+			music.page = music.maxpage;
+		}else{
+			music.page -= 1;
+		}
+		kag.process('music_mode.ks', '*sub_draw');
 	}
 } incontextof global;
 music.page = 0;

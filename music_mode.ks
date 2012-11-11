@@ -24,24 +24,7 @@
 @wt
 
 @iscript
-//マウスホイール用の設定
-kag.fore.messages[kag.numMessageLayers - 1].onMouseWheel = function(shift, delta, x, y){
-	if (delta < 0){
-		if  (music.page >= music.maxpage){
-			music.page = 0;
-		}else{
-			music.page += 1;
-		}
-		kag.process('music_mode.ks', '*sub_draw');
-	}else if(delta > 0){
-		if  (music.page <= 0){
-			music.page = music.maxpage;
-		}else{
-			music.page -= 1;
-		}
-		kag.process('music_mode.ks', '*sub_draw');
-	}
-};
+music.in_music = 1; //マウスホイールのためのCGモードであることの目印
 music.playing = 0;
 // 全てのメッセージレイヤを非表示にします
 for(var i=0;i<kag.numMessageLayers;i++)
@@ -145,7 +128,7 @@ music.temp_start = 1;
 	@backlay
 	@image layer="&kag.numCharacterLayers-2" visible=true page=back storage=&music.music_cg[music.playing]
 	@stoptrans
-	@trans method=crossfade time=300 layer="&kag.numCharacterLayers-1" children=false
+	@trans method=crossfade time=300 layer="&kag.numCharacterLayers-2" children=false
 	@wt
 @endif
 @jump storage=music_mode.ks target=*redraw
@@ -264,8 +247,6 @@ music.temp_start = 1;
 @endnowait
 @resetfont
 
-;マウスホイールを使うために、フォーカス設定
-@eval exp="kag.fore.messages[kag.numMessageLayers - 1].focus()"
 @return
 
 *nextpage
@@ -306,6 +287,7 @@ if (music.playing == -1){
 
 ; ミュージックモードを閉じる
 *back
+@eval exp="music.in_music=0"
 ; タイマー停止
 @eval exp="music.timer.enabled=false"
 ;バックアップした音量を戻す

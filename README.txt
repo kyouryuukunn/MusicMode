@@ -17,6 +17,7 @@ https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
 一度聞いた曲だけ表示する
 タイトル数に合わせて、自動でぺージを調整する
 タイトルに合わせて、背景をトランジション
+マウスホイールでページ移動
 再生位置表示、調整スライダー
 一時的な音量変更
 ある程度レイアウトも変更出来る
@@ -44,6 +45,12 @@ kag.onCloseQuery = function ()
 	delete music.timer if music.timer !== void;
 	//追加部分↑
 	global.Window.onCloseQuery(askYesNo("終了しますか？"));
+} incontextof kag;
+var onMouseWheel_org = kag.onMouseWheel;
+kag.onMouseWheel = function (shift, delta, x, y)
+{
+	onMouseWheel_org(...);
+	if (music.in_music) music.wheel(...);
 } incontextof kag;
 
 music_mode.ksのラベル*backの右クリックの設定を環境にあわせてかえる
