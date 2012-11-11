@@ -16,7 +16,7 @@
 @iscript
 var music = %[];
 music.base = 'black'; //背景、透明部分がある場合は、直前のゲーム画面が見える
-music.playmark = 'checked'; //再生中のマーク
+music.playmark = 'playing'; //再生中のマーク
 music.line   = 3; //横の数
 music.column = 3; //縦の数
 music.base_x = 50; //初期x座標

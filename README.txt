@@ -40,7 +40,9 @@ kag.onCloseQuery = function ()
 {
 	saveSystemVariables();
 	if(!askOnClose) { global.Window.onCloseQuery(true); return; }
+	//’Ç‰Á•”•ª«
 	delete music.timer if music.timer !== void;
+	//’Ç‰Á•”•ªª
 	global.Window.onCloseQuery(askYesNo("I—¹‚µ‚Ü‚·‚©H"));
 } incontextof kag;
 
