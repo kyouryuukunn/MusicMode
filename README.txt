@@ -51,6 +51,8 @@ music_mode_init.ksの18行目からの各変数を書きかえる
 
 music.base = 'black'; //背景画像
 music.playmark = 'checked'; //再生中のマークを表示する画像
+music.playmark_x = -37; //再生中マークのタイトルからの相対x座標
+music.playmark_y = 8; //再生中マークのタイトルからの相対y座標
 music.line   = 7;  //再生タイトルを表示する列数
 music.column = 3;  //再生タイトルを表示する行数
 music.base_x = 50; //再生タイトルの初期x座標

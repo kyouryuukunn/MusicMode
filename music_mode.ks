@@ -140,7 +140,7 @@ music.temp_start = 1;
 ;ハードウェア例外が出る
 ;@eval exp="music.slider[1].position=0"
 @call storage=music_mode.ks target=*draw
-@image layer="&kag.numCharacterLayers-1" visible=true storage=&music.playmark left=&music.check_x-30 top=&music.check_y+15
+@image layer="&kag.numCharacterLayers-1" visible=true storage=&music.playmark left=&music.check_x+music.playmark_x top=&music.check_y+music.playmark_y
 @if exp="music.music_cg_on" 
 	@backlay
 	@image layer="&kag.numCharacterLayers-2" visible=true page=back storage=&music.music_cg[music.playing]
