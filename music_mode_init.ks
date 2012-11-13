@@ -15,16 +15,17 @@
 ;前処理と設定
 @iscript
 var music = %[];
+//ここを書き換える↓------------------------------------------------------- 
 music.base = 'black'; //背景、透明部分がある場合は、直前のゲーム画面が見える
 music.playmark = 'playing'; //再生中のマーク
 music.playmark_x = -37; //再生中マークのタイトルからの相対x座標
 music.playmark_y = 8; //再生中マークのタイトルからの相対y座標
-music.line   = 2; //横の数
-music.column = 2; //縦の数
-music.base_x = 50; //初期x座標
-music.base_y = 35; //初期y座標
-music.width  = (kag.scWidth - music.base_x*2)\music.column; //タイトル間の幅
-music.height = 50; //タイトル間の高さ
+music.line   = 7;  //再生タイトルを表示する列数
+music.column = 3;  //再生タイトルを表示する行数
+music.base_x = 50; //再生タイトルの初期x座標
+music.base_y = 35; //再生タイトルの初期y座標
+music.width  = (kag.scWidth - music.base_x*2)\music.column; //列の幅
+music.height = 50; //行の幅
 music.page_basex = 500; //ページボタンの初期x座標
 music.page_basey = 0;   //ページボタンの初期y座標
 music.page_width = 20;  //ページボタン間の幅
@@ -61,6 +62,8 @@ music.music_cg = [ //表示するCG
 'こすり(左から右へ)',
 '爆発'
 ];
+//ここを書き換える↑------------------------------------------------------- 
+
 if (sf.music_mode_init === void){
 	//最初に一度だけ実行
 	//聞いたかどうかのフラグ

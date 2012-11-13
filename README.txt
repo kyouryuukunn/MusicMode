@@ -1,3 +1,4 @@
+赤恐竜	http://akakyouryuu.blog.fc2.com/
 
 
 よくあるミュージックモードを実装する
@@ -8,7 +9,7 @@
 報告をくれるとうれしいです。
 当然なにかあっても責任は取れないけど
 スライダーには色々な墓場のKLayers.ksを利用しています。
-
+http://www.geocities.jp/keep_creating/krkrplugins/
 
 全部入りサンプルをskydriveで公開中
 https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
@@ -53,30 +54,8 @@ kag.onMouseWheel = function (shift, delta, x, y)
 	if (music.in_music) music.wheel(...);
 } incontextof kag;
 
-music_mode.ksのラベル*backの右クリックの設定を環境にあわせてかえる
-music_mode_init.ksの18行目からの各変数を書きかえる
-
-music.base = 'black'; //背景画像
-music.playmark = 'checked'; //再生中のマークを表示する画像
-music.playmark_x = -37; //再生中マークのタイトルからの相対x座標
-music.playmark_y = 8; //再生中マークのタイトルからの相対y座標
-music.line   = 7;  //再生タイトルを表示する列数
-music.column = 3;  //再生タイトルを表示する行数
-music.base_x = 50; //再生タイトルの初期x座標
-music.base_y = 35; //再生タイトルの初期y座標
-music.width  = (kag.scWidth - music.base_x*2)\music.column; //列の幅
-music.height = 50; //行の幅
-music.page_basex = 500; //ページボタンの初期x座標
-music.page_basey = 0;   //ページボタンの初期y座標
-music.page_width = 20;  //ページボタン間の幅
-music.page_height = 0;  //ページボタン間の高さ
-music.page_font = %['italic' => true];  //ページボタンのフォント
-music.music_storage = []; //音楽ファイル名を入れる
-music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
-music.music_cg_on = 0; //曲に合わせて背景を変更するか
-music.music_cg = []; //表示するCG
-
-music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
+music_mode.ksのラベル*backの右クリックの設定を環境にあわせてかえる。
+music_mode_init.ksの18行目からの各コメントを参照しながら変数を書きかえる。
 また、music.complete()を実行することで全ての曲を聞いたことにできる
 
 次にflagmusicを曲を演奏するマクロに組み込む
