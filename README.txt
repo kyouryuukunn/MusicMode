@@ -37,22 +37,7 @@ global.music
 [link exp="kag.callExtraConductor('music_mode.ks', '*music_mode')"]ミュージックモード[endlink]
 
 設定方法
-まずAfterinit.tjs(なければつくる)につぎの文をくわえる
-kag.onCloseQuery = function ()
-{
-	saveSystemVariables();
-	if(!askOnClose) { global.Window.onCloseQuery(true); return; }
-	//追加部分↓
-	delete music.timer if music.timer !== void;
-	//追加部分↑
-	global.Window.onCloseQuery(askYesNo("終了しますか？"));
-} incontextof kag;
-var onMouseWheel_org = kag.onMouseWheel;
-kag.onMouseWheel = function (shift, delta, x, y)
-{
-	onMouseWheel_org(...);
-	if (music.in_music) music.wheel(...);
-} incontextof kag;
+
 
 music_mode.ksのラベル*backの右クリックの設定を環境にあわせてかえる。
 music_mode_init.ksの18行目からの各コメントを参照しながら変数を書きかえる。

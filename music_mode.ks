@@ -24,8 +24,15 @@
 @wt
 
 @iscript
-music.in_music = 1; //マウスホイールのためのCGモードであることの目印
+//最初は再生位置の表示を変えないため
 music.playing = 0;
+// マウスホイールの動作を一時的に変える
+music.onMouseWheel_org = kag.onMouseWheel;
+kag.onMouseWheel = function (shift, delta, x, y)
+{
+	music.onMouseWheel_org(...);
+	music.wheel(...);
+} incontextof kag;
 // 全てのメッセージレイヤを非表示にします
 for(var i=0;i<kag.numMessageLayers;i++)
 	kag.fore.messages[i].setOptions(%['visible' => false]);
@@ -71,6 +78,14 @@ music.gettime = function ()
 music.timer = new Timer(music.gettime, '');
 music.timer.interval = 1000;
 music.timer.enabled = true;
+//ミュージックモードでゲーム終了したときのタイマー無効化用に
+//一時的に終了処理を置き替える
+music.onCloseQuery_org = kag.onCloseQuery;
+kag.onCloseQuery = function ()
+{
+	invalidate music.timer;
+	music.onCloseQuery_org();
+} incontextof kag;
 @endscript
 
 ;メッセージレイヤの設定
@@ -287,14 +302,20 @@ if (music.playing == -1){
 
 ; ミュージックモードを閉じる
 *back
-@eval exp="music.in_music=0"
-; タイマー停止
-@eval exp="music.timer.enabled=false"
+@iscript
+// マウスホイールの動作を戻す
+kag.onMouseWheel = music.onMouseWheel_org;
+//終了処理を戻す
+kag.onCloseQuery = music.onCloseQuery_org;
+// タイマー開放
+invalidate music.timer if music.timer !== void;
+@endscript
 ;バックアップした音量を戻す
 @eval exp="kag.tagHandlers.bgmopt(%['gvolume' => tempvolume/1000])"
 @eval exp="music.temp_start=0"
 @tempload
-;@history enabled=true output=true
 ;各自で設定
+;@history enabled=true output=true
 @rclick enabled=false
+
 @return

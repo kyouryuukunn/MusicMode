@@ -31,8 +31,10 @@ music.page_basey = 0;   //ページボタンの初期y座標
 music.page_width = 20;  //ページボタン間の幅
 music.page_height = 0;  //ページボタン間の高さ
 music.page_font = %['italic' => true];  //ページボタンのフォント
-music.music_caption_font = %['italic' => true];  //タイトルのフォント
-music.music_font = %[]; //操作用リンクのフォント
+music.music_caption_font = %['italic' => true];	//タイトルのフォント
+						//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
+music.music_font = %[];	//操作用リンクのフォント
+			//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
 //music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
