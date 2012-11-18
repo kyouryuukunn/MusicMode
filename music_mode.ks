@@ -43,21 +43,21 @@ music.slider = new Array();
 for (var i=0; i < 2; i++){
 	music.slider[i] = new KSliderLayer(kag, kag.fore.layers[kag.numCharacterLayers - 2]);
 	with(music.slider[i]){
-		.setOptions(%['graphic' => 'slider_base', 'tabgraphic' => 'slider_tab']);
+		.setOptions(%['graphic' => music.slider_base, 'tabgraphic' => music.slider_tab]);
 	}
 }
 // ◇スライダー0の設定 - (BGM音量調整)
 with(music.slider[0]){
-	.left = 190;
-	.top = kag.scHeight - 110;
+	.left = music.volumeslider_pos[0];
+	.top =  music.volumeslider_pos[1];
 	.hval = kag.bgm.buf1.volume2 / 100000;
 	.updateState();
 	.onchangefunc = 'music.volumeslider';
 }
 // ◇スライダー1の設定 - (再生位置調整)
 with(music.slider[1]){
-	.left = 190;
-	.top = kag.scHeight - 60;
+	.left = music.positionslider_pos[0];
+	.top =  music.positionslider_pos[1];
 	.hval = 0;
 	.onchangefunc = 'music.positionslider';
 }
@@ -235,7 +235,7 @@ music.temp_start = 1;
 
 @eval exp="kag.tagHandlers.font(music.music_panel_font)"
 @nowait
-@locate x=30 y=&kag.scHeight-180
+@locate x=&music.music_panel_pos[0][0] y=&music.music_panel_pos[0][1]
 @if exp="music.music_panel_cg.count > 0"
 	@button storage=music_mode.ks target=*backpage graphic=&music.music_panel_cg[0]
 @else
@@ -244,7 +244,7 @@ music.temp_start = 1;
 	@endlink
 @endif
 
-@locate x=140 y=&kag.scHeight-180
+@locate x=&music.music_panel_pos[1][0] y=&music.music_panel_pos[1][1]
 @if exp="kag.bgm.currentBuffer.status == 'stop' || !music.temp_start"
 	@if exp="music.music_panel_cg.count > 0"
 		@button storage=music_mode.ks target=*start graphic=&music.music_panel_cg[1]
@@ -262,7 +262,7 @@ music.temp_start = 1;
 @endif
 @endlink
 
-@locate x=230 y=&kag.scHeight-180
+@locate x=&music.music_panel_pos[2][0] y=&music.music_panel_pos[2][1]
 @if exp="music.music_panel_cg.count > 0"
 	@button storage=music_mode.ks target=*nextpage graphic=&music.music_panel_cg[3]
 @else
@@ -271,7 +271,7 @@ music.temp_start = 1;
 	@endlink
 @endif
 
-@locate x=350 y=&kag.scHeight-180
+@locate x=&music.music_panel_pos[3][0] y=&music.music_panel_pos[3][1]
 @if exp="music.music_panel_cg.count > 0"
 	@button storage=music_mode.ks target=*back graphic=&music.music_panel_cg[4]
 @else
@@ -280,13 +280,9 @@ music.temp_start = 1;
 	@endlink
 @endif
 
-@locate x=30 y=&kag.scHeight-130
-音量
-@locate x=30 y=&kag.scHeight-80
-再生位置
+
 @endnowait
 @resetfont
-
 @return
 
 *nextpage

@@ -17,6 +17,8 @@
 var music = %[];
 //‚±‚±‚ğ‘‚«Š·‚¦‚é«------------------------------------------------------- 
 music.base = 'black'; //”wŒi‰æ‘œA“§–¾•”•ª‚ª‚ ‚éê‡‚ÍA’¼‘O‚ÌƒQ[ƒ€‰æ–Ê‚ªŒ©‚¦‚é
+music.slider_base = 'slider_base';	//ƒXƒ‰ƒCƒ_[‚Ì”wŒi‰æ‘œ
+music.slider_tab = 'slider_tab';	//ƒXƒ‰ƒCƒ_[‚Ì‚Â‚Ü‚İ—pƒ{ƒ^ƒ“‰æ‘œ
 music.playmark = 'playing'; //Ä¶’†ƒ}[ƒN‚Ì‰æ‘œ
 music.playmark_x = -37; //Ä¶’†ƒ}[ƒN‚Ìƒ^ƒCƒgƒ‹‚©‚ç‚Ì‘Š‘ÎxÀ•W
 music.playmark_y = 8; //Ä¶’†ƒ}[ƒN‚Ìƒ^ƒCƒgƒ‹‚©‚ç‚Ì‘Š‘ÎyÀ•W
@@ -31,7 +33,7 @@ music.page_basey = 0;   //ƒy[ƒWƒ{ƒ^ƒ“‚Ì‰ŠúyÀ•W
 music.page_width = 20;  //ƒy[ƒWƒ{ƒ^ƒ“ŠÔ‚Ì•
 music.page_height = 0;  //ƒy[ƒWƒ{ƒ^ƒ“ŠÔ‚Ì‚‚³
 music.page_cg = ['1', '2'];  	//ƒy[ƒWƒ{ƒ^ƒ“‚Ég—p‚·‚éƒ{ƒ^ƒ“‰æ‘œ, ‚±‚Ì”z—ñ‚ª‹ó‚È‚ç•¶š‚»‚¤‚Å‚È‚¢‚È‚ç‰æ‘œ‚ğ•\¦‚·‚é
-								//‘O‚©‚ç‡‚Ég—p‚·‚é•ª‚¾‚¯w’è‚·‚é
+			//—á music.page_cg = ['1', '2'] ‘O‚©‚ç‡‚Ég—p‚·‚é•ª‚¾‚¯w’è‚·‚é
 music.nowpage_cg = ['off_1', 'off_2'];	//ƒy[ƒWƒ{ƒ^ƒ“‚É‰æ‘œ‚ğg—p‚·‚é‚Æ‚«‚Í‚±‚±‚ÉŒ»İ‚Ìƒy[ƒW‚ª‰æ‘œ‚ğw’è‚·‚é
 music.page_font = %['italic' => true];  //ƒy[ƒWƒ{ƒ^ƒ“‚É•¶š‚ğg‚¤‚Æ‚«‚ÌƒtƒHƒ“ƒg
 					//(ƒ†[ƒU[‚ªƒtƒHƒ“ƒg‚ğ•ÏX‚·‚é‚Æ•s–¡‚¢‚Ì‚Å‚¿‚á‚ñ‚Æw’è‚·‚é‚±‚Æ)
@@ -41,6 +43,14 @@ music.music_panel_cg = [];  	//‘€ì—pƒŠƒ“ƒN‚Ég—p‚·‚éƒ{ƒ^ƒ“‰æ‘œ, ‚±‚Ì”z—ñ‚ª‹ó‚È‚
 				//‘O‚©‚ç‡‚É	/‘O‚Ì‹È/Ä¶/’â~/Ÿ‚Ì‹È/–ß‚é
 music.music_panel_font = %[];	//‘€ì—pƒŠƒ“ƒN‚É•¶š‚ğg‚¤‚Æ‚«‚ÌƒtƒHƒ“ƒg
 				//(ƒ†[ƒU[‚ªƒtƒHƒ“ƒg‚ğ•ÏX‚·‚é‚Æ•s–¡‚¢‚Ì‚Å‚¿‚á‚ñ‚Æw’è‚·‚é‚±‚Æ)
+music.music_panel_pos = [	//‘€ì—pƒŠƒ“ƒN‚ÌˆÊ’u, ‘O‚©‚ç‡‚É/‘O‚Ì‹È/Ä¶(’â~)/Ÿ‚Ì‹È/–ß‚é
+				[30, kag.scHeight-180], 
+				[140, kag.scHeight-180], 
+				[230, kag.scHeight-180], 
+				[350, kag.scHeight-180]
+			];
+music.volumeslider_pos   = [90, kag.scHeight-110];	//‰¹—Ê’²®ƒXƒ‰ƒCƒ_[‚ÌˆÊ’u
+music.positionslider_pos = [90, kag.scHeight-60];	//Ä¶‘€ìƒXƒ‰ƒCƒ_[‚ÌˆÊ’u
 music.music_storage = []; //‰¹Šyƒtƒ@ƒCƒ‹–¼‚ğ“ü‚ê‚é
 music.music_caption = []; //ƒ~ƒ…[ƒWƒbƒNƒ‚[ƒh‚É•\¦‚³‚ê‚éƒ^ƒCƒgƒ‹‚ğ“ü‚ê‚é
 //music_storage, music_caption, music_cg‚Ì”z—ñ‚Í“¯‚¶‡”Ô‚Å‚È‚­‚Ä‚Í‚È‚ç‚È‚¢
