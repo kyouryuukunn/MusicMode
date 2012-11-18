@@ -101,8 +101,10 @@ kag.onCloseQuery = function ()
 
 @nowait
 @current layer="&'message' + (kag.numMessageLayers - 2)"
-@locate x=450 y=&kag.scHeight-80
+@locate x=&music.position_pos[0] y=&music.position_pos[1]
+@eval exp="kag.tagHandlers.font(music.music_position_font)"
 00:00/00:00
+@resetfont
 @endnowait
 ;•`‰æ
 @call storage=music_mode.ks target=*draw
@@ -112,9 +114,11 @@ kag.onCloseQuery = function ()
 *redraw
 @current layer="&'message' + (kag.numMessageLayers - 2)"
 @er
-@locate x=450 y="&kag.scHeight-80"
+@locate x=&music.position_pos[0] y=&music.position_pos[1]
 @nowait
+@eval exp="kag.tagHandlers.font(music.music_position_font)"
 @emb exp="'%02d:%02d/%02d:%02d'.sprintf((kag.bgm.buf1.totalTime*music.slider[1].hval)\60000, (int)(((kag.bgm.buf1.totalTime*music.slider[1].hval)%60000)/1000), kag.bgm.buf1.totalTime\60000, (int)((kag.bgm.buf1.totalTime%60000)/1000))"
+@resetfont
 @endnowait
 @s
 

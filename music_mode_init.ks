@@ -51,6 +51,8 @@ music.music_panel_pos = [	//‘€ì—pƒŠƒ“ƒN‚ÌˆÊ’u, ‘O‚©‚ç‡‚É/‘O‚Ì‹È/Ä¶(’â~)/Ÿ‚
 			];
 music.volumeslider_pos   = [90, kag.scHeight-110];	//‰¹—Ê’²®ƒXƒ‰ƒCƒ_[‚ÌˆÊ’u
 music.positionslider_pos = [90, kag.scHeight-60];	//Ä¶‘€ìƒXƒ‰ƒCƒ_[‚ÌˆÊ’u
+music.position_pos = [450, kag.scHeight-80];		//Ä¶ˆÊ’u•\¦‚ÌˆÊ’u
+music.music_position_font = %[];			//Ä¶ˆÊ’u•\¦‚ÌƒtƒHƒ“ƒg
 music.music_storage = []; //‰¹Šyƒtƒ@ƒCƒ‹–¼‚ğ“ü‚ê‚é
 music.music_caption = []; //ƒ~ƒ…[ƒWƒbƒNƒ‚[ƒh‚É•\¦‚³‚ê‚éƒ^ƒCƒgƒ‹‚ğ“ü‚ê‚é
 //music_storage, music_caption, music_cg‚Ì”z—ñ‚Í“¯‚¶‡”Ô‚Å‚È‚­‚Ä‚Í‚È‚ç‚È‚¢
