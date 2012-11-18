@@ -7,13 +7,13 @@
 ;専用のレイヤを作る
 @laycount layers="&kag.numCharacterLayers + 2" messages="&kag.numMessageLayers + 2"
 ;すべてのレイヤより上に表示
-;背景
+;背景、現在ページ
 @layopt index="&2000000+100" layer="&kag.numCharacterLayers-2"
 ;再生マーク
 @layopt index="&2000000+101" layer="&kag.numCharacterLayers-1"
 ;再生位置を描画
 @layopt index="&2000000+102" layer="&'message' + (kag.numMessageLayers-2)"
-;タイトル、ページを描画
+;タイトル、ページ、操作用ボタンを描画
 @layopt index="&2000000+103" layer="&'message' + (kag.numMessageLayers-1)"
 
 @backlay
@@ -142,6 +142,7 @@ music.temp_start = 1;
 @if exp="music.music_cg_on" 
 	@backlay
 	@image layer="&kag.numCharacterLayers-2" visible=true page=back storage=&music.music_cg[music.playing]
+	@pimage dx="&music.page_basex + music.page_width * music.page + 100" dy="&music.page_basey + music.page_height * music.page" storage=&music.nowpage_cg[music.page] layer="&kag.numCharacterLayers-2" page=back
 	@stoptrans
 	@trans method=crossfade time=300 layer="&kag.numCharacterLayers-2" children=false
 	@wt
@@ -159,7 +160,7 @@ music.temp_start = 1;
 *start
 @unlocklink
 @if exp="!music.temp_start"
-	@jump storage=music_mode.ks target=*play
+	;何もしない
 @elsif exp="kag.bgm.currentBuffer.status == 'stop'"
 	;停止位置から再生
 	@eval exp="music.temp_position = kag.bgm.buf1.totalTime*music.slider[1].hval"
@@ -175,6 +176,9 @@ music.temp_start = 1;
 
 ;タイトル描画
 *draw
+;pimageを使用しているので背景も再描画しないといけない
+@image layer="&kag.numCharacterLayers-2" storage=&music.music_cg[music.playing] page=fore visible=true
+@image layer="&kag.numCharacterLayers-2" storage=&music.base page=fore visible=true cond="!music.temp_start"
 @current layer="&'message' + (kag.numMessageLayers - 1)"
 @er
 @layopt layer="&kag.numCharacterLayers-1" visible="&music.checkedpage == music.page"
@@ -201,59 +205,80 @@ music.temp_start = 1;
 ;ページが複数あったら
 @if exp="music.maxpage > 0"
 	@eval exp="music.pagecount = 0"
-	;@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
-	;@nowait
-	;@eval exp="kag.tagHandlers.font(music.page_font)"
-	;page
-	;@resetfont
-	;@endnowait
 *page_loop
 		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
 		@nowait
 		@if exp="music.pagecount != music.page"
-			@link storage=music_mode.ks target=*sub_draw exp="&'music.page = ' + music.pagecount"
-			@eval exp="kag.tagHandlers.font(music.page_font)"
-			@emb exp="music.pagecount + 1"
-			@resetfont
-			@endlink
+			@if exp="music.page_cg.count > 0"
+				@button storage=music_mode.ks target=*sub_draw exp="&'music.page = ' + music.pagecount" graphic=&music.page_cg[music.pagecount]
+			@else
+				@link storage=music_mode.ks target=*sub_draw exp="&'music.page = ' + music.pagecount"
+				@eval exp="kag.tagHandlers.font(music.page_font)"
+				@emb exp="music.pagecount + 1"
+				@resetfont
+				@endlink
+			@endif
 		@else
-			;現在ページなる色を変えて無効
-			@eval exp="kag.tagHandlers.font(music.page_font)"
-			@font color=0x666666
-			@emb exp="music.pagecount + 1"
-			@resetfont
+			;現在ページの色を変える
+			@if exp="music.page_cg.count > 0"
+				@pimage dx="&music.page_basex + music.page_width * music.pagecount + 100" dy="&music.page_basey + music.page_height * music.pagecount" storage=&music.nowpage_cg[music.pagecount] layer="&kag.numCharacterLayers-2"
+			@else
+				@eval exp="kag.tagHandlers.font(music.page_font)"
+				@font color=0x666666
+				@emb exp="music.pagecount + 1"
+				@resetfont
+			@endif
 		@endif
 		@endnowait
 	@jump storage=music_mode.ks target=*page_loop cond="++music.pagecount < (music.maxpage + 1)"
-	;@image storage=checked layer=1 left="&600 + 20 * music.page" top=0 visible=true opacity=255
 @endif
 
-@eval exp="kag.tagHandlers.font(music.music_font)"
+@eval exp="kag.tagHandlers.font(music.music_panel_font)"
 @nowait
-@link storage=music_mode.ks target=*backpage
 @locate x=30 y=&kag.scHeight-180
-前の曲
-@endlink
+@if exp="music.music_panel_cg.count > 0"
+	@button storage=music_mode.ks target=*backpage graphic=&music.music_panel_cg[0]
+@else
+	@link storage=music_mode.ks target=*backpage
+	前の曲
+	@endlink
+@endif
 
 @locate x=140 y=&kag.scHeight-180
 @if exp="kag.bgm.currentBuffer.status == 'stop' || !music.temp_start"
-	@link storage=music_mode.ks target=*start
-	再生
+	@if exp="music.music_panel_cg.count > 0"
+		@button storage=music_mode.ks target=*start graphic=&music.music_panel_cg[1]
+	@else
+		@link storage=music_mode.ks target=*start
+		再生
+	@endif
 @else
-	@link storage=music_mode.ks target=*stop
-	停止
+	@if exp="music.music_panel_cg.count > 0"
+		@button storage=music_mode.ks target=*stop graphic=&music.music_panel_cg[2]
+	@else
+		@link storage=music_mode.ks target=*stop
+		停止
+	@endif
 @endif
 @endlink
 
-@link storage=music_mode.ks target=*nextpage
 @locate x=230 y=&kag.scHeight-180
-@ch text=次の曲
-@endlink
+@if exp="music.music_panel_cg.count > 0"
+	@button storage=music_mode.ks target=*nextpage graphic=&music.music_panel_cg[3]
+@else
+	@link storage=music_mode.ks target=*nextpage
+	次の曲
+	@endlink
+@endif
 
-@link storage=music_mode.ks target=*back
 @locate x=350 y=&kag.scHeight-180
-戻る
-@endlink
+@if exp="music.music_panel_cg.count > 0"
+	@button storage=music_mode.ks target=*back graphic=&music.music_panel_cg[4]
+@else
+	@link storage=music_mode.ks target=*back
+	戻る
+	@endlink
+@endif
 
 @locate x=30 y=&kag.scHeight-130
 音量

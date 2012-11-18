@@ -16,12 +16,12 @@
 @iscript
 var music = %[];
 //ここを書き換える↓------------------------------------------------------- 
-music.base = 'black'; //背景、透明部分がある場合は、直前のゲーム画面が見える
-music.playmark = 'playing'; //再生中のマーク
+music.base = 'black'; //背景画像、透明部分がある場合は、直前のゲーム画面が見える
+music.playmark = 'playing'; //再生中マークの画像
 music.playmark_x = -37; //再生中マークのタイトルからの相対x座標
 music.playmark_y = 8; //再生中マークのタイトルからの相対y座標
-music.line   = 7;  //再生タイトルを表示する列数
-music.column = 3;  //再生タイトルを表示する行数
+music.line   = 2;  //再生タイトルを表示する列数
+music.column = 2;  //再生タイトルを表示する行数
 music.base_x = 50; //再生タイトルの初期x座標
 music.base_y = 35; //再生タイトルの初期y座標
 music.width  = (kag.scWidth - music.base_x*2)\music.column; //列の幅
@@ -30,11 +30,17 @@ music.page_basex = 500; //ページボタンの初期x座標
 music.page_basey = 0;   //ページボタンの初期y座標
 music.page_width = 20;  //ページボタン間の幅
 music.page_height = 0;  //ページボタン間の高さ
-music.page_font = %['italic' => true];  //ページボタンのフォント
-music.music_caption_font = %['italic' => true];	//タイトルのフォント
+music.page_cg = ['1', '2'];  	//ページボタンに使用するボタン画像, この配列が空なら文字そうでないなら画像を表示する
+								//前から順に使用する分だけ指定する
+music.nowpage_cg = ['off_1', 'off_2'];	//ページボタンに画像を使用するときはここに現在のページが画像を指定する
+music.page_font = %['italic' => true];  //ページボタンに文字を使うときのフォント
+					//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
+music.music_caption_font = %['italic' => true];	//曲タイトルのフォント
 						//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
-music.music_font = %[];	//操作用リンクのフォント
-			//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
+music.music_panel_cg = [];  	//操作用リンクに使用するボタン画像, この配列が空なら文字そうでないなら画像を表示する
+				//前から順に	/前の曲/再生/停止/次の曲/戻る
+music.music_panel_font = %[];	//操作用リンクに文字を使うときのフォント
+				//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
 music.music_storage = []; //音楽ファイル名を入れる
 music.music_caption = []; //ミュージックモードに表示されるタイトルを入れる
 //music_storage, music_caption, music_cgの配列は同じ順番でなくてはならない
