@@ -142,7 +142,7 @@ music.temp_start = 1;
 @if exp="music.music_cg_on" 
 	@backlay
 	@image layer="&kag.numCharacterLayers-2" visible=true page=back storage=&music.music_cg[music.playing]
-	@pimage dx="&music.page_basex + music.page_width * music.page + 100" dy="&music.page_basey + music.page_height * music.page" storage=&music.nowpage_cg[music.page] layer="&kag.numCharacterLayers-2" page=back
+	@pimage dx="&music.page_basex + music.page_width * music.page" dy="&music.page_basey + music.page_height * music.page" storage=&music.nowpage_cg[music.page] layer="&kag.numCharacterLayers-2" page=back
 	@stoptrans
 	@trans method=crossfade time=300 layer="&kag.numCharacterLayers-2" children=false
 	@wt
@@ -206,7 +206,7 @@ music.temp_start = 1;
 @if exp="music.maxpage > 0"
 	@eval exp="music.pagecount = 0"
 *page_loop
-		@locate x="&music.page_basex + music.page_width * music.pagecount + 100" y="&music.page_basey + music.page_height * music.pagecount"
+		@locate x="&music.page_basex + music.page_width * music.pagecount" y="&music.page_basey + music.page_height * music.pagecount"
 		@nowait
 		@if exp="music.pagecount != music.page"
 			@if exp="music.page_cg.count > 0"
@@ -221,7 +221,7 @@ music.temp_start = 1;
 		@else
 			;現在ページの色を変える
 			@if exp="music.page_cg.count > 0"
-				@pimage dx="&music.page_basex + music.page_width * music.pagecount + 100" dy="&music.page_basey + music.page_height * music.pagecount" storage=&music.nowpage_cg[music.pagecount] layer="&kag.numCharacterLayers-2"
+				@pimage dx="&music.page_basex + music.page_width * music.pagecount" dy="&music.page_basey + music.page_height * music.pagecount" storage=&music.nowpage_cg[music.pagecount] layer="&kag.numCharacterLayers-2"
 			@else
 				@eval exp="kag.tagHandlers.font(music.page_font)"
 				@font color=0x666666

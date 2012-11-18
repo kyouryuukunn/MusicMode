@@ -34,7 +34,7 @@ music.page_width = 20;  //ページボタン間の幅
 music.page_height = 0;  //ページボタン間の高さ
 music.page_cg = ['1', '2'];  	//ページボタンに使用するボタン画像, この配列が空なら文字そうでないなら画像を表示する
 			//例 music.page_cg = ['1', '2'] 前から順に使用する分だけ指定する
-music.nowpage_cg = ['off_1', 'off_2'];	//ページボタンに画像を使用するときはここに現在のページが画像を指定する
+music.nowpage_cg = ['off_1', 'off_2'];	//ページボタンに画像を使用するときはここに現在のページの画像を指定する
 music.page_font = %['italic' => true];  //ページボタンに文字を使うときのフォント
 					//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
 music.music_caption_font = %['italic' => true];	//曲タイトルのフォント
