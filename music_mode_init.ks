@@ -40,14 +40,15 @@ music.page_font = %['italic' => true];  //ページボタンに文字を使うときのフォント
 music.music_caption_font = %['italic' => true];	//曲タイトルのフォント
 						//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
 music.music_panel_cg = [];  	//操作用リンクに使用するボタン画像, この配列が空なら文字そうでないなら画像を表示する
-				//前から順に	/前の曲/再生/停止/次の曲/戻る
+				//前から順に	/前の曲/再生/停止/ランダム/次の曲/戻る
 music.music_panel_font = %[];	//操作用リンクに文字を使うときのフォント
 				//(ユーザーがフォントを変更すると不味いのでちゃんと指定すること)
-music.music_panel_pos = [	//操作用リンクの位置, 前から順に/前の曲/再生(停止)/次の曲/戻る
+music.music_panel_pos = [	//操作用リンクの位置, 前から順に/前の曲/再生(停止)/ランダム/次の曲/戻る
 				[30, kag.scHeight-180], 
 				[140, kag.scHeight-180], 
 				[230, kag.scHeight-180], 
-				[350, kag.scHeight-180]
+				[350, kag.scHeight-180],
+				[450, kag.scHeight-180]
 			];
 music.volumeslider_pos   = [90, kag.scHeight-110];	//音量調整スライダーの位置
 music.positionslider_pos = [90, kag.scHeight-60];	//再生操作スライダーの位置

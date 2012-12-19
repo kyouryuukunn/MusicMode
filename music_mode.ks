@@ -268,16 +268,25 @@ music.temp_start = 1;
 
 @locate x=&music.music_panel_pos[2][0] y=&music.music_panel_pos[2][1]
 @if exp="music.music_panel_cg.count > 0"
-	@button storage=music_mode.ks target=*nextpage graphic=&music.music_panel_cg[3]
+	@button storage=music_mode.ks target=*randomplay graphic=&music.music_panel_cg[3]
+@else
+	@link storage=music_mode.ks target=*randomplay
+	ランダム
+	@endlink
+@endif
+
+@locate x=&music.music_panel_pos[3][0] y=&music.music_panel_pos[3][1]
+@if exp="music.music_panel_cg.count > 0"
+	@button storage=music_mode.ks target=*nextpage graphic=&music.music_panel_cg[4]
 @else
 	@link storage=music_mode.ks target=*nextpage
 	次の曲
 	@endlink
 @endif
 
-@locate x=&music.music_panel_pos[3][0] y=&music.music_panel_pos[3][1]
+@locate x=&music.music_panel_pos[4][0] y=&music.music_panel_pos[4][1]
 @if exp="music.music_panel_cg.count > 0"
-	@button storage=music_mode.ks target=*back graphic=&music.music_panel_cg[4]
+	@button storage=music_mode.ks target=*back graphic=&music.music_panel_cg[5]
 @else
 	@link storage=music_mode.ks target=*back
 	戻る
@@ -323,6 +332,17 @@ if (music.playing == -1){
 }
 @endscript
 @jump storage=music_mode.ks target=*play cond="music.playing != -1"
+@s
+
+*randomplay
+@unlocklink
+@iscript
+var i = intrandom(0, music.music_storage.count - 1);
+if (!sf.music_flag[i] || music.playing == i)
+	kag.process('music_mode.ks', '*randomplay'); //聞いていて、再生中じゃないものがでるまで繰り返す
+music.playing = i;
+@endscript
+@jump storage=music_mode.ks target=*play
 @s
 
 ; ミュージックモードを閉じる
