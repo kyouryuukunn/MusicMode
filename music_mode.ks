@@ -74,6 +74,20 @@ music.gettime = function ()
 			kag.process('music_mode.ks', '*redraw');
 		}
 	}
+	else if (music.temp_start)
+	{
+		if (kag.bgm.buf1.position == 0) 停止ボタンで停止しているかどうかを判断
+		{
+			if (music.loop)
+			{
+				kag.process('music_mode.ks', '*play');
+			}
+			else if (music.continue)
+			{
+				kag.process('music_mode.ks', '*nextpage');
+			}
+		}
+	}
 };
 music.timer = new Timer(music.gettime, '');
 music.timer.interval = 1000;
@@ -291,6 +305,40 @@ music.temp_start = 1;
 	@link storage=music_mode.ks target=*back
 	戻る
 	@endlink
+@endif
+
+@locate x=&music.music_panel_pos[5][0] y=&music.music_panel_pos[5][1]
+@if exp="music.music_panel_cg.count > 0"
+	@if exp="music.loop"
+		@button storage=music_mode.ks target=*sub_draw graphic=&music.music_panel_cg[6] exp="music.loop = 0"
+	@else
+		@button storage=music_mode.ks target=*sub_draw graphic=&music.music_panel_cg[7] exp="music.loop = 1, music.continue = 0"
+	@endif
+@else
+	@if exp="music.loop"
+		[link storage=music_mode.ks target=*sub_draw exp="music.loop = 0"]ループする[endlink]
+	@else
+		@font color=0x666666
+		[link storage=music_mode.ks target=*sub_draw exp="music.loop = 1, music.continue = 0"]ループする[endlink]
+	@endif
+@endif
+@resetfont
+
+@eval exp="kag.tagHandlers.font(music.music_panel_font)"
+@locate x=&music.music_panel_pos[6][0] y=&music.music_panel_pos[6][1]
+@if exp="music.music_panel_cg.count > 0"
+	@if exp="music.continue"
+		@button storage=music_mode.ks target=*sub_draw graphic=&music.music_panel_cg[8] exp="music.continue= 0"
+	@else
+		@button storage=music_mode.ks target=*sub_draw graphic=&music.music_panel_cg[9] exp="music.continue= 1, music.loop = 0"
+	@endif
+@else
+	@if exp="music.continue"
+		[link storage=music_mode.ks target=*sub_draw exp="music.continue = 0"]連続再生[endlink]
+	@else
+		@font color=0x666666
+		[link storage=music_mode.ks target=*sub_draw exp="music.continue = 1, music.loop = 0"]連続再生[endlink]
+	@endif
 @endif
 
 
