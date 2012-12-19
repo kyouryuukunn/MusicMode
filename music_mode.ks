@@ -76,7 +76,7 @@ music.gettime = function ()
 	}
 	else if (music.temp_start)
 	{
-		if (kag.bgm.buf1.position == 0) ’âŽ~ƒ{ƒ^ƒ“‚Å’âŽ~‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ð”»’f
+		if (kag.bgm.buf1.position == 0) //’âŽ~ƒ{ƒ^ƒ“‚Å’âŽ~‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ð”»’f
 		{
 			if (music.loop)
 			{
