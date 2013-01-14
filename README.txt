@@ -11,8 +11,7 @@
 スライダーには色々な墓場のKLayers.ksを利用しています。
 http://www.geocities.jp/keep_creating/krkrplugins/
 
-全部入りサンプルをskydriveで公開中
-https://skydrive.live.com/#cid=8F8EF4D2142F33D4&id=8F8EF4D2142F33D4!257
+全部入りサンプルをホームページ、ブログで公開中
 
 機能
 一度聞いた曲だけ表示する
